@@ -10,6 +10,7 @@ import RegisterPage from './pages/SignandRegPage/RegisterPage';
 import LandingPage from './pages/customerPages/LandingPage';
 import ProtectedRoute from './protectedRouters/ProtectedRoute';
 import CusHeaderBar from './components/custormerCompo/CusHeaderBar';
+import UpdateProfile from './components/custormerCompo/UpdateProfile';
 
 
 
@@ -30,6 +31,7 @@ function App() {
 
           <Route path='/home' element={<ProtectedRoute><LandingPage/></ProtectedRoute>}/>
           <Route path='/navbaruser' element={<ProtectedRoute><CusHeaderBar/></ProtectedRoute>}/>
+          <Route path='/update' element={<ProtectedRoute><UpdateProfile/></ProtectedRoute>}/>
           
         </Routes>
       </UserContextProvider>
