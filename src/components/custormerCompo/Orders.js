@@ -9,6 +9,14 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+   // Function to format date and time
+   const formatDateTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleDateString(); // e.g., 12/6/2024
+    const formattedTime = date.toLocaleTimeString(); // e.g., 3:33:15 PM
+    return { date: formattedDate, time: formattedTime };
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
       if (!user) return;
@@ -107,6 +115,8 @@ export default function Orders() {
       ) : (
         orders.map((order) => {
           const status = getOrderStatus(order);
+          const { date, time } = formatDateTime(order.createdAt);
+
           return (
             <div 
               key={order._id} 
@@ -152,8 +162,15 @@ export default function Orders() {
 
               </div>
                     <div className="text-sm text-left text-black">
+                        <span className='text-orange-500'>Ordered date:</span> {date}
+                    </div>
+                    <div className="text-sm text-left text-black">
+                        <span className='text-orange-500'>Ordered time:</span> {time}
+                    </div>
+                    <div className="text-sm text-left text-black">
                         <span className='text-orange-500'>Collect your order :</span> {order.place_address}
                       </div>
+                      
             </div>
           );
         })
