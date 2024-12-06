@@ -84,7 +84,7 @@ const CusHeaderBar = () => {
             className="flex items-center justify-center h-12 px-4 py-2 text-center text-white transition-colors duration-300 bg-orange-500 rounded hover:text-gray-300 hover:bg-orange-700"
           >
             <FaCartPlus size={30} />
-            <span className="pl-2">Add Cart</span>
+            <span className="pl-2">Cart</span>
           </button>
         </div>
 
