@@ -1,15 +1,17 @@
 import React, { useContext, useState } from 'react';
-import { FaGripLines, FaCartPlus, FaCog, FaSignOutAlt } from 'react-icons/fa';
+import { FaGripLines, FaCartPlus, FaCog, FaSignOutAlt, FaTimes } from 'react-icons/fa';
 import { UserContext } from '../../context/UserContext';
 import Logo from '../../images/logo.png';
 import CartModal from './CartModel'; // Import the CartModal component
+import UpdateProfile from './UpdateProfile';
 
 const CusHeaderBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDropdownmobileOpen, setIsDropdownmobileOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false); // State for controlling cart modal
-
+  const [isUpdateProfileOpen, setIsUpdateProfileOpen] = useState(false);
+  
   const { user, loading, logout } = useContext(UserContext);
 
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
@@ -17,7 +19,8 @@ const CusHeaderBar = () => {
   const toggleMobileDropdown = () => setIsMobileDropdownOpen((prev) => !prev);
 
   const toggleCartModal = () => setIsCartModalOpen((prev) => !prev); // Toggle function for cart modal
-
+  const toggleUpdateProfileModal = () => setIsUpdateProfileOpen((prev) => !prev);
+  
   const renderUserSection = () => {
     if (loading) {
       return <span>Loading...</span>;
@@ -60,10 +63,13 @@ const CusHeaderBar = () => {
             {/* Desktop Dropdown Menu */}
             {isDropdownOpen && (
               <div className="absolute right-0 z-50 mt-2 bg-[#2A2A2D] text-white shadow-md rounded-lg py-2 w-40">
-                <button className="flex items-center w-full px-4 py-2 text-left text-white transition-colors duration-300 hover:text-gray-300">
-                  <FaCog className="mr-2" size={18} />
-                  Settings
-                </button>
+                <button 
+              onClick={toggleUpdateProfileModal}
+              className="flex items-center w-full px-4 py-2 text-left text-white transition-colors duration-300 hover:text-gray-300"
+            >
+              <FaCog className="mr-2" size={18} />
+              Settings
+            </button>
                 <button className="flex items-center w-full px-4 py-2 text-left text-white transition-colors duration-300 hover:text-gray-300" onClick={logout}>
                   <FaSignOutAlt className="mr-2" size={18} />
                   Logout
@@ -96,10 +102,13 @@ const CusHeaderBar = () => {
             {/* Mobile User Dropdown */}
             {isDropdownmobileOpen && (
               <div className="absolute right-0 z-3 mt-2 bg-[#2A2A2D] text-white shadow-md rounded-lg py-2 w-40">
-                <button className="flex items-center w-full px-4 py-2 text-left text-white transition-colors duration-300 hover:text-gray-300">
-                  <FaCog className="mr-2" size={18} />
-                  Settings
-                </button>
+                <button 
+              onClick={toggleUpdateProfileModal}
+              className="flex items-center w-full px-4 py-2 text-left text-white transition-colors duration-300 hover:text-gray-300"
+            >
+              <FaCog className="mr-2" size={18} />
+              Settings
+            </button>
                 <button className="flex items-center w-full px-4 py-2 text-left text-white transition-colors duration-300 hover:text-gray-300" onClick={logout}>
                   <FaSignOutAlt className="mr-2" size={18} />
                   Logout
@@ -137,7 +146,21 @@ const CusHeaderBar = () => {
 
       {/* Cart Modal */}
       <CartModal isOpen={isCartModalOpen} onClose={toggleCartModal} />
+      {isUpdateProfileOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+            <button 
+              onClick={toggleUpdateProfileModal}
+              className="absolute text-gray-600 top-4 right-4 hover:text-gray-900"
+            >
+              <FaTimes size={24} />
+            </button>
+            <UpdateProfile onClose={toggleUpdateProfileModal} />
+          </div>
+        </div>
+      )}
     </header>
+    
   );
 };
 
