@@ -4,6 +4,9 @@ import { UserContext } from '../../context/UserContext';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from '../payment/CheckoutForm';
 import { Elements } from '@stripe/react-stripe-js';
+import Orders from './Orders';
+import {  FaCartPlus } from 'react-icons/fa';
+
 
 
 const CartModal = ({ isOpen, onClose }) => {
@@ -17,6 +20,7 @@ const CartModal = ({ isOpen, onClose }) => {
   const stripePromise = loadStripe('pk_test_51QSgJEAmilHOBn6cQ0yhtMDnzqs98UozfcFrDEBco1EItSseJDO75SlhVDI2llcMjtFxu75iWgijdrjoybV5hsMx00TPEHoj3R');
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('wishlist');
 
   
   // Updated payment handler
@@ -254,10 +258,48 @@ const CartModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="p-6 bg-white rounded-lg w-[600px] max-h-[80vh] flex flex-col">
-        <h2 className="mb-4 text-2xl font-bold text-gray-800">Your Cart</h2>
+      <div className="p-6 bg-white rounded-lg w-[50%] h-[80%] flex flex-col justify-center">
+        <div className='flex justify-between'>
+          <div className='flex items-center justify-center'>
+            <div>
+               <p className="flex pr-4 mb-4 text-3xl font-bold text-orange-500"><FaCartPlus/></p>          
+            </div>
+            <div>
+              <p className="flex mb-4 text-3xl font-bold text-orange-500">Cart</p>
+            </div>
+                     
+          </div>
+          <div>
+                     <div className='flex mb-4'>
+            <button 
+              onClick={() => setActiveTab('wishlist')}
+              className={`px-4 py-2 mx-2 rounded-lg ${activeTab === 'wishlist' 
+                ? 'bg-[#19191A] text-white' 
+                : 'bg-gray-200 text-gray-700'}`}
+            >
+              Wishlist
+            </button>
+            <button 
+              onClick={() => setActiveTab('orders')}
+              className={`px-4 py-2 mx-2 rounded-lg ${activeTab === 'orders' 
+                ? 'bg-[#19191A] text-white' 
+                : 'bg-gray-200 text-gray-700'}`}
+            >
+              Orders
+            </button>
+        </div>
+          </div>
 
-        {loading && (
+                  {/* Tab Navigation */}
+         
+        
+        </div>
+
+        <div className='overflow-y-auto px-10 py-10 border-2 border-orange-500 rounded-lg h-[80%]'>
+          
+          
+            {activeTab === 'wishlist' && (<div>
+              {loading && (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-600">Loading cart details...</p>
           </div>
@@ -268,15 +310,19 @@ const CartModal = ({ isOpen, onClose }) => {
             <span className="block sm:inline">{error}</span>
           </div>
         )}
+        
+        <div className='mb-8 '><h1 className="mb-4 text-2xl font-bold">Wishlist</h1></div>
+
 
         {!loading && cartItems.length === 0 && (
           <div className="flex items-center justify-center flex-grow">
-            <p className="text-lg text-gray-500">Your cart is empty!</p>
+            <p className="text-lg text-gray-500">Your wishlist is empty!</p>
           </div>
         )}
-
+        
         {!loading && cartItems.length > 0 && (
-          <div className="flex-grow pr-2 overflow-y-auto">
+          <div className="flex-grow px-5 py-5 pr-2 overflow-y-auto border rounded-lg">
+            
             <ul className="space-y-4">
               {cartItems.map((item) => (
                 <li 
@@ -335,10 +381,10 @@ const CartModal = ({ isOpen, onClose }) => {
               ))}
             </ul>
 
-            <div className="mb-4">
+            <div className="mt-4 mb-4 text-start">
               <label 
                 htmlFor="place_address" 
-                className="block mb-2 text-sm font-medium text-gray-700"
+                className="block mb-2 text-sm font-medium text-orange-500"
               >
                 Delivery Address
               </label>
@@ -397,12 +443,7 @@ const CartModal = ({ isOpen, onClose }) => {
         )}
 
         <div className="flex justify-end mt-4 space-x-4">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-gray-600 transition-colors border border-gray-300 rounded-lg hover:bg-gray-100"
-          >
-            Close
-          </button>
+          
           <button
             onClick={handlepayment}
             disabled={cartItems.length === 0}
@@ -431,8 +472,32 @@ const CartModal = ({ isOpen, onClose }) => {
             </button>
           </div>
         </div>
+        
       )}
+            </div>)}
+        
+          
+          
+          {activeTab === 'orders' && (
+          <div className=''>
+        <Orders/>
       </div>
+    )}
+          
+        </div>
+        <div className='flex justify-end mt-4'>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-600 transition-colors border border-gray-300 rounded-lg hover:bg-gray-100 w-[200px]"
+          >
+            Close
+          </button>
+        </div>
+
+        
+      
+      </div>
+      
     </div>
   );
 };
