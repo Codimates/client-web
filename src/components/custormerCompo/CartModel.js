@@ -6,6 +6,7 @@ import CheckoutForm from '../payment/CheckoutForm';
 import { Elements } from '@stripe/react-stripe-js';
 import Orders from './Orders';
 import {  FaCartPlus } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 
 
@@ -33,29 +34,53 @@ const CartModal = ({ isOpen, onClose }) => {
     setIsPaymentModalOpen(true);
   };
 
-  // Payment success handler
   const handlePaymentSuccess = async (paymentIntent) => {
     try {
       // Update all cart orders as paid
       const orderIds = [...new Set(cartItems.map(item => item.orderId))];
       
-      await Promise.all(orderIds.map(async (orderId) => {
+      // First, reduce stock levels for each item in the cart
+      const stockReductionPromises = cartItems.map(async (item) => {
+        try {
+          // Reduce stock level for each product
+          await axios.put(`/inventory/reducestocklevel/${item.inventory_id}`, {
+            quantity: item.quantity
+          });
+        } catch (stockError) {
+          console.error(`Error reducing stock for item ${item.inventory_id}:`, stockError);
+          // Optionally throw or handle stock reduction errors
+          throw new Error(`Failed to reduce stock for item ${item.brand_name} ${item.model_name}`);
+        }
+      });
+  
+      // Wait for all stock reductions to complete
+      await Promise.all(stockReductionPromises);
+  
+      // Update orders as paid
+      const orderUpdatePromises = orderIds.map(async (orderId) => {
         await axios.put(`/order/update/${orderId}`, {
           ispayed: true,
           payment_intent_id: paymentIntent.id
         });
-      }));
-
+      });
+  
+      // Wait for all order updates to complete
+      await Promise.all(orderUpdatePromises);
+  
       // Reset cart and close modals
       setCartItems([]);
       setIsPaymentModalOpen(false);
       onClose();
+
+      //success message
+      toast.success('Payment successful!');
+  
+      
     } catch (err) {
-      console.error('Error updating orders:', err);
-      setError('Failed to process payment');
+      console.error('Error processing payment and updating inventory:', err);
+      setError(err.message || 'Failed to process payment and update inventory');
     }
   };
-
   // Payment failure handler
   const handlePaymentFailure = (error) => {
     console.error('Payment failed:', error);
