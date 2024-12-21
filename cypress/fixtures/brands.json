@@ -1,0 +1,15 @@
+[
+    {
+      "id": 1,
+      "name": "Brand A",
+      "description": "High-performance laptops",
+      "image": "brandA.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Brand B",
+      "description": "Gaming laptops",
+      "image": "brandB.jpg"
+    }
+  ]
+  
